@@ -1,32 +1,39 @@
-import User from "../models/UserSchema.js"
+import User from '../models/UserSchema.js'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
-const createUser = async (req, res) => {
- const {username,password,role} = req.body
-    try{
+const login = async(req,res)=>{
 
-    const isExisting = await User.findOne({username})
+  try{
+    const{username,password} = req.body
+    const user = await User.findOne({username})
 
-    if(isExisting){
-        return res.status(400).send({message:"User is already created"})
-    } 
+    if(!user){
+      return res.status(401).send({message:"user not found"})
 
-    const hashPassword = await bcrypt.hash(password,10)
-
-    const newUser = new User({
-        username:username,
-        password:hashPassword,
-        role:role
-    })
-
-    await newUser.save()
-    res.status(201).json({
-      message: `User registered with username ${username}`,
-    });
-
-    }catch(err){
-        res.status(400).send({message:"something wrong"})
     }
-  }
 
-export { createUser };
+    const isMatch  = await bcrypt.compare(password,user.password)
+    if(!isMatch)
+      return res.status(401).send({message:"Invalid credentials"})
+
+    const token = jwt.sign({
+      id:user._id,
+      role:user.role,
+    },
+    process.env.JWT_SECRET,
+    {expires:'1d'},
+    res.status(200).send({
+      token,
+      user:{
+        id:user._id,
+        name:user.name
+      }
+    })
+  )
+  }catch(err){
+    res.status(500).send({message:err.message})
+  }
+}
+
+export default {login}
