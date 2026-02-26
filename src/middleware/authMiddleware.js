@@ -1,20 +1,19 @@
 import jwt from 'jsonwebtoken'
 
-export const verifyToken= async(req,res)=>{
-    console.log("hitsss")
-   const authHeader = req.headers.authorization
-
-   if(!authHeader)
-    return res.status(401).send({message:"No token provided"})
-
-   const token = authHeader.spli(" ")[1]
-
-   jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
-    if(err)
-        return res.staus(403).send({message:"Invalid token"})
-    req.user = decoded
-    next()
-   })
+export const verifyToken= async(req,res,next)=>{
+    
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+   try {
+     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+     console.log(decoded,"decodedd")
+     req.user = decoded; // attach user info
+     next();
+   } catch (err) {
+     return res.status(401).json({ message: "Invalid token" });
+   }
 }
 
 export const allowRoles = (...roles)=>{
@@ -22,5 +21,6 @@ export const allowRoles = (...roles)=>{
         if(!roles.includes(req.user.role)){
             return res.status(403).send({message:"Access Denied"})
         }
+        next()
     }
 }

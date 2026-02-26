@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    username: {
       type: String,
       required: true,
     },
 
-    username: {
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["admin", "staff", "student", "parent"],
       required: true,
+    },
+    staffId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Staff",
     },
   },
   { timestamps: true },
