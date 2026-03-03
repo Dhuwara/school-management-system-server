@@ -36,10 +36,9 @@ const staffSchema = new mongoose.Schema(
       trim: true,
     },
 
-    subject: {
-      type: String,
+    subjects: {
+      type: [String],
       required: true,
-      trim: true,
     },
 
     qualification: {

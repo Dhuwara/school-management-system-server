@@ -5,15 +5,13 @@ import { getNextSequence } from "../utils/idGenerator.js";
 
 export const addStaff = async (req, res) => {
   try {
-    const staffData = req.body.teacher;
+    const { firstName, lastName, email, password, ...rest } = req.body;
 
-    if (!staffData) {
-      return res.status(400).json({ message: "Staff data missing" });
+    if (!firstName || !email || !password) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const { email, password, ...rest } = staffData;
-
-    const username = staffData.firstName + staffData.lastName;
+    const username = firstName + lastName;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -29,9 +27,11 @@ export const addStaff = async (req, res) => {
       role: "staff",
     });
 
-    const employeeId = await getNextSequence("employeeId")
-    console.log(employeeId,"idd")
+    const employeeId = await getNextSequence("employeeId");
+
     await Staff.create({
+      firstName,
+      lastName,
       ...rest,
       user: newUser._id,
       employeeId,
@@ -51,5 +51,7 @@ export const addStaff = async (req, res) => {
 
 export const getAllStaffs = async(req,res)=>{
   const staffs = await Staff.find()
-  console.log(staffs,"stafff")
+  if(!staffs) return res.status(400).send({message:"staffs not found"})
+
+  res.status(200).send(staffs)
 }

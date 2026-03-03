@@ -9,7 +9,9 @@ import staffRoutes from './routes/staffRoutes.js'
 import counterRoutes from "./routes/counterRoutes.js";
 import classRoutes from "./routes/classRoutes.js"
 import subjectRoutes from "./routes/subjectRoutes.js"
-
+import classMappingRoutes from './routes/classMappingRoutes.js'
+import timetableRoutes from "./routes/timetableRoutes.js"
+import classConifgRoutes from './routes/classConfigRoutes.js'
 import cookieParser from "cookie-parser";
 dotenv.config();
 
@@ -32,6 +34,9 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/counter", counterRoutes);
 app.use("/api/class", classRoutes);
 app.use("/api/subject", subjectRoutes);
+app.use("/api/classmapping", classMappingRoutes);
+app.use("/api/timetable", timetableRoutes);
+app.use("/api/classconfig", classConifgRoutes);
  
 const PORT = process.env.PORT || 5000;
 

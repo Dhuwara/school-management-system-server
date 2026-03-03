@@ -4,26 +4,50 @@ const classSchema = new mongoose.Schema(
   {
     className: {
       type: String,
-      required: true,
+      required: [true, "Class name is required"],
+      trim: true,
     },
+
     section: {
       type: String,
-      required: true,
+      required: [true, "Section is required"],
+      trim: true,
     },
+
     capacity: {
-      type: String,
-      required: true,
+      type: Number,
+      required: [true, "Capacity is required"],
+      min: [1, "Capacity must be at least 1"],
     },
+
     roomNumber: {
       type: String,
-      required: true,
+      required: [true, "Room number is required"],
+      trim: true,
     },
-    class_teacher: {
-      type: String,
-      required: true,
+
+    classTeacher: {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
+      firstName: {
+        type: String,
+        required: true,
+      },
     },
+
+    subjects: [
+      {
+        type: String,
+        required: true,
+        trim: true,
+      },
+    ],
   },
   { timestamps: true },
 );
+
+classSchema.index({ className: 1, section: 1 }, { unique: true });
 
 export default mongoose.model("Class", classSchema);
