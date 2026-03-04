@@ -1,4 +1,6 @@
 import ClassMapping from "../models/ClassMappingSchema.js";
+import Staff from "../models/StaffSchema.js";
+import Class from "../models/ClassSchema.js";
 
 
 export const createClassMapping = async (req, res) => {
@@ -35,6 +37,65 @@ export const createClassMapping = async (req, res) => {
       success: true,
       message: "Class mapping created successfully",
       data: newMapping,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const upsertClassMapping = async (req, res) => {
+  try {
+    const { classId, academicYear, classTeacher, subjectTeachers, students } =
+      req.body;
+
+    if (!classId || !academicYear || !classTeacher) {
+      return res.status(400).json({
+        message: "classId, academicYear and classTeacher are required",
+      });
+    }
+
+    // ✅ 1️⃣ Get class details
+    const classData = await Class.findById(classId);
+
+    if (!classData) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
+    await Staff.findOneAndUpdate(
+      { employeeId: classTeacher },
+      {
+        $set: {
+          assignedClass: {
+            classId: classId,
+            className: `${classData.className}-${classData.section}`,
+          },
+        },
+      },
+      { new: true },
+    );
+
+    const updatedMapping = await ClassMapping.findOneAndUpdate(
+      { classId, academicYear },
+      {
+        $set: {
+          classTeacher,
+          subjectTeachers,
+          students,
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+        runValidators: true,
+      },
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Class mapping saved successfully",
+      data: updatedMapping,
     });
   } catch (error) {
     res.status(500).json({

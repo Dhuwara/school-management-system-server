@@ -12,6 +12,8 @@ import subjectRoutes from "./routes/subjectRoutes.js"
 import classMappingRoutes from './routes/classMappingRoutes.js'
 import timetableRoutes from "./routes/timetableRoutes.js"
 import classConifgRoutes from './routes/classConfigRoutes.js'
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import examRoutes from './routes/examRoutes.js'
 import cookieParser from "cookie-parser";
 dotenv.config();
 
@@ -37,6 +39,8 @@ app.use("/api/subject", subjectRoutes);
 app.use("/api/classmapping", classMappingRoutes);
 app.use("/api/timetable", timetableRoutes);
 app.use("/api/classconfig", classConifgRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/exam", examRoutes);
  
 const PORT = process.env.PORT || 5000;
 

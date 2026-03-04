@@ -75,6 +75,15 @@ const staffSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    assignedClass: {
+      classId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Class",
+      },
+      className: {
+        type: String,
+      },
+    },
   },
   { timestamps: true },
 );

@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const classSchema = new mongoose.Schema(
   {
+    standard: {
+      type: String,
+      required: true,
+    },
     className: {
       type: String,
       required: [true, "Class name is required"],
@@ -44,6 +48,11 @@ const classSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+    workload: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
   },
   { timestamps: true },
 );

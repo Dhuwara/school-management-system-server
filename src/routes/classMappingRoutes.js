@@ -5,11 +5,12 @@ import {
   getClassMappingByClass,
   updateClassMapping,
   deleteClassMapping,
+  upsertClassMapping,
 } from "../Controllers/classMappingController.js";
 
 const router = express.Router();
 
-router.post("/create", createClassMapping);
+router.post("/save", upsertClassMapping);
 router.get("/getall", getAllClassMappings);
 router.get("/:classId/:academicYear", getClassMappingByClass);
 router.put("/update/:id", updateClassMapping);

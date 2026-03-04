@@ -27,7 +27,7 @@ export const upsertClassConfig = async (req, res) => {
 
 export const getConfig = async (req, res) => {
   try {
-    const configData = await ClassConfig.find(); 
+    const configData = await ClassConfig.findOne(); 
     console.log(configData, "configData");
 
     return res.status(200).json(configData);
